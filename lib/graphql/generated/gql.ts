@@ -16,10 +16,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "\n  query GetLobbies($filter: LobbyFilterInput, $pagination: PaginationInput) {\n    lobbies(filter: $filter, pagination: $pagination) {\n      lobbyId\n      title\n      status\n      createdAt\n      players {\n        playerId\n        username\n      }\n    }\n  }\n": typeof types.GetLobbiesDocument,
     "\n  query GetLatestLobbyId {\n      latestLobbyId\n  }\n": typeof types.GetLatestLobbyIdDocument,
+    "\n  subscription GetLatestLobbyIdSub {\n      lobbyAdded\n  }\n": typeof types.GetLatestLobbyIdSubDocument,
 };
 const documents: Documents = {
     "\n  query GetLobbies($filter: LobbyFilterInput, $pagination: PaginationInput) {\n    lobbies(filter: $filter, pagination: $pagination) {\n      lobbyId\n      title\n      status\n      createdAt\n      players {\n        playerId\n        username\n      }\n    }\n  }\n": types.GetLobbiesDocument,
     "\n  query GetLatestLobbyId {\n      latestLobbyId\n  }\n": types.GetLatestLobbyIdDocument,
+    "\n  subscription GetLatestLobbyIdSub {\n      lobbyAdded\n  }\n": types.GetLatestLobbyIdSubDocument,
 };
 
 /**
@@ -44,6 +46,10 @@ export function graphql(source: "\n  query GetLobbies($filter: LobbyFilterInput,
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetLatestLobbyId {\n      latestLobbyId\n  }\n"): (typeof documents)["\n  query GetLatestLobbyId {\n      latestLobbyId\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription GetLatestLobbyIdSub {\n      lobbyAdded\n  }\n"): (typeof documents)["\n  subscription GetLatestLobbyIdSub {\n      lobbyAdded\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

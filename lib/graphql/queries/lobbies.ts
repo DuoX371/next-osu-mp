@@ -21,3 +21,9 @@ export const GET_LATEST_LOBBY_ID = graphql(`
       latestLobbyId
   }
 `)
+
+export const LATEST_LOBBY_SUBSCRIPTION = graphql(`
+  subscription GetLatestLobbyIdSub {
+      lobbyAdded
+  }
+`)

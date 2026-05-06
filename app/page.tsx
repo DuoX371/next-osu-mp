@@ -1,10 +1,10 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { useQuery } from '@apollo/client/react';
+import { useQuery, useSubscription } from '@apollo/client/react';
 import { LobbyFilter } from '@/components/lobby/lobby-filter';
 import { LobbyList } from '@/components/lobby/lobby-list';
-import { GET_LATEST_LOBBY_ID, GET_LOBBIES } from '@/lib/graphql/queries/lobbies';
+import { GET_LATEST_LOBBY_ID, GET_LOBBIES, LATEST_LOBBY_SUBSCRIPTION } from '@/lib/graphql/queries/lobbies';
 
 type Filter = {
   username?: string;
@@ -26,6 +26,7 @@ export default function HomePage() {
   const { data: latestData } = useQuery(GET_LATEST_LOBBY_ID, {
     pollInterval: 30_000,
   });
+  const { data: subData } = useSubscription(LATEST_LOBBY_SUBSCRIPTION);
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
@@ -39,7 +40,7 @@ export default function HomePage() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
           </span>
-          latest #{latestData?.latestLobbyId}
+          latest #{subData?.lobbyAdded ?? latestData?.latestLobbyId ?? 0}
           {!loading && data && (
             <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
               {data.lobbies.length} results
