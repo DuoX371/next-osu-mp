@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useQuery, useSubscription } from '@apollo/client/react';
 import { LobbyFilter } from '@/components/lobby/lobby-filter';
 import { LobbyList } from '@/components/lobby/lobby-list';
@@ -28,6 +28,15 @@ export default function HomePage() {
   });
   const { data: subData } = useSubscription(LATEST_LOBBY_SUBSCRIPTION);
 
+  const [latestId, setLatestId] = useState(0);
+
+  useEffect(() => {
+    const sub = subData?.lobbyAdded ?? 0;
+    const query = latestData?.latestLobbyId ?? 0;
+
+    setLatestId(prev => Math.max(prev, sub, query));
+  }, [subData, latestData]);
+
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
       {/* Masthead */}
@@ -40,7 +49,7 @@ export default function HomePage() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
           </span>
-          latest #{subData?.lobbyAdded ?? latestData?.latestLobbyId ?? 0}
+          latest #{latestId}
           {!loading && data && (
             <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
               {data.lobbies.length} results
