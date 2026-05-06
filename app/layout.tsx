@@ -15,7 +15,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/kerusi.png',
-        alt: ""
+        width: 1200,
+        height: 630,
+        alt: "https://www.pixiv.net/en/artworks/141863122"
       }
     ],
     type: "website"
