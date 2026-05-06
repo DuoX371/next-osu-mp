@@ -15,3 +15,9 @@ export const GET_LOBBIES = graphql(`
     }
   }
 `);
+
+export const GET_LATEST_LOBBY_ID = graphql(`
+  query GetLatestLobbyId {
+      latestLobbyId
+  }
+`)
