@@ -23,9 +23,7 @@ export default function HomePage() {
     },
   });
 
-  const { data: latestData } = useQuery(GET_LATEST_LOBBY_ID, {
-    pollInterval: 30_000,
-  });
+  const { data: latestData } = useQuery(GET_LATEST_LOBBY_ID);
   const { data: subData } = useSubscription(LATEST_LOBBY_SUBSCRIPTION);
 
   const [latestId, setLatestId] = useState(0);

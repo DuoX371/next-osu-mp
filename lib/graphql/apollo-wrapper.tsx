@@ -15,6 +15,12 @@ const wsLink = typeof window !== 'undefined'
   ? new GraphQLWsLink(
       createClient({
         url: process.env.NEXT_PUBLIC_WS_URL + '/graphql',
+        on: {
+          connected: () => console.log('[WS] Connected'),
+          closed: (event) => console.log('[WS] Closed', event),
+          error: (error) => console.error('[WS] Error', error),
+          connecting: () => console.log('[WS] Connecting...'),
+        },
       }),
     )
   : null;
