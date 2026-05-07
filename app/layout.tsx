@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     siteName: "osu! mp search",
     images: [
       {
-        url: '/kerusi.png',
+        url: '/kerusi.jpg',
         width: 1200,
         height: 630,
         alt: "https://www.pixiv.net/en/artworks/141863122"
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "osu! mp search",
     description: "Search osu! multiplayer lobbies for 🤓",
-    images: ['/kerusi.png']
+    images: ['/kerusi.jpg']
   }
 };
 
