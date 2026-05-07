@@ -13,15 +13,36 @@ type Filter = {
   playerId?: number;
 };
 
+const PAGE_SIZES = [5, 10, 20, 50];
+
 export default function HomePage() {
   const [filter, setFilter] = useState<Filter>({});
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
+  function handleFilterChange(f: Filter) {
+    setFilter(f);
+    setPage(0);
+  }
+
+  function handlePageSizeChange(size: number) {
+    setPageSize(size);
+    setPage(0);
+  }
 
   const { data, loading } = useQuery(GET_LOBBIES, {
     variables: {
       filter,
-      pagination: { skip: 0, limit: 20 },
+      pagination: { 
+        skip: page * pageSize,
+        limit: pageSize
+      },
     },
   });
+
+  const totalPages = Math.ceil((data?.lobbies.total ?? 0) / pageSize);
+  const hasNextPage = page + 1 < totalPages;
+  const hasPreviousPage = page > 0;
 
   const { data: latestData } = useQuery(GET_LATEST_LOBBY_ID);
   const { data: subData } = useSubscription(LATEST_LOBBY_SUBSCRIPTION);
@@ -50,7 +71,7 @@ export default function HomePage() {
           latest #{latestId}
           {!loading && data && (
             <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-              {data.lobbies.length} results
+              {data.lobbies.total} results
             </span>
           )}
         </div>
@@ -59,12 +80,56 @@ export default function HomePage() {
       {/* Filters */}
       <div className="mb-6">
         <Suspense fallback={<div className="h-16" />}>
-          <LobbyFilter onChange={setFilter} />
+          <LobbyFilter onChange={handleFilterChange} />
         </Suspense>
       </div>
 
       {/* Results */}
-      <LobbyList lobbies={data?.lobbies as any ?? []} loading={loading} />
+      <LobbyList lobbies={data?.lobbies.lobbies as any ?? []} loading={loading} />
+
+      {/* Pagination */}
+      {!loading && totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between">
+          <button
+            onClick={() => setPage((p) => p - 1)}
+            disabled={!hasPreviousPage}
+            className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            ← prev
+          </button>
+
+          {/* Page info + size selector */}
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[11px] text-muted-foreground">
+              page {page + 1} of {totalPages}
+            </span>
+
+            <div className="flex items-center gap-1">
+              {PAGE_SIZES.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => handlePageSizeChange(size)}
+                  className={`font-mono text-[11px] px-2 py-0.5 rounded-sm transition-colors ${
+                    pageSize === size
+                      ? 'bg-foreground text-background'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            disabled={!hasNextPage}
+            className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            next →
+          </button>
+        </div>
+      )}
 
       <img
         src="/kalsit.png"

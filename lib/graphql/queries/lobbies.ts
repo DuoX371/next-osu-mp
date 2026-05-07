@@ -4,13 +4,16 @@ import { graphql } from "../generated";
 export const GET_LOBBIES = graphql(`
   query GetLobbies($filter: LobbyFilterInput, $pagination: PaginationInput) {
     lobbies(filter: $filter, pagination: $pagination) {
-      lobbyId
-      title
-      status
-      createdAt
-      players {
-        playerId
-        username
+      total
+      lobbies {
+        lobbyId
+        title
+        status
+        createdAt
+        players {
+          playerId
+          username
+        }
       }
     }
   }
