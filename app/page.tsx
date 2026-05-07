@@ -88,7 +88,7 @@ export default function HomePage() {
       <LobbyList lobbies={data?.lobbies.lobbies as any ?? []} loading={loading} />
 
       {/* Pagination */}
-      {!loading && totalPages > 1 && (
+      {!loading && (
         <div className="mt-4 flex items-center justify-between">
           <button
             onClick={() => setPage((p) => p - 1)}
