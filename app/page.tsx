@@ -84,52 +84,50 @@ export default function HomePage() {
         </Suspense>
       </div>
 
+      {/* Pagination */}
+      <div className="mt-4 mb-4 flex items-center justify-between">
+        <button
+          onClick={() => setPage((p) => p - 1)}
+          disabled={!hasPreviousPage}
+          className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          ← prev
+        </button>
+
+        {/* Page info + size selector */}
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[11px] text-muted-foreground">
+            page {page + 1} of {totalPages}
+          </span>
+
+          <div className="flex items-center gap-1">
+            {PAGE_SIZES.map((size) => (
+              <button
+                key={size}
+                onClick={() => handlePageSizeChange(size)}
+                className={`font-mono text-[11px] px-2 py-0.5 rounded-sm transition-colors ${
+                  pageSize === size
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button
+          onClick={() => setPage((p) => p + 1)}
+          disabled={!hasNextPage}
+          className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          next →
+        </button>
+      </div>
+
       {/* Results */}
       <LobbyList lobbies={data?.lobbies.lobbies as any ?? []} loading={loading} />
-
-      {/* Pagination */}
-      {!loading && (
-        <div className="mt-4 flex items-center justify-between">
-          <button
-            onClick={() => setPage((p) => p - 1)}
-            disabled={!hasPreviousPage}
-            className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            ← prev
-          </button>
-
-          {/* Page info + size selector */}
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] text-muted-foreground">
-              page {page + 1} of {totalPages}
-            </span>
-
-            <div className="flex items-center gap-1">
-              {PAGE_SIZES.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => handlePageSizeChange(size)}
-                  className={`font-mono text-[11px] px-2 py-0.5 rounded-sm transition-colors ${
-                    pageSize === size
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            disabled={!hasNextPage}
-            className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            next →
-          </button>
-        </div>
-      )}
 
       <img
         src="/kalsit.png"
