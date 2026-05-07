@@ -19,6 +19,7 @@ export default function HomePage() {
   const [filter, setFilter] = useState<Filter>({});
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [cachedTotal, setCachedTotal] = useState(0);
 
   function handleFilterChange(f: Filter) {
     setFilter(f);
@@ -40,7 +41,7 @@ export default function HomePage() {
     },
   });
 
-  const totalPages = Math.ceil((data?.lobbies.total ?? 0) / pageSize);
+  const totalPages = Math.ceil(cachedTotal / pageSize);
   const hasNextPage = page + 1 < totalPages;
   const hasPreviousPage = page > 0;
 
@@ -55,6 +56,12 @@ export default function HomePage() {
 
     setLatestId(prev => Math.max(prev, sub, query));
   }, [subData, latestData]);
+
+  useEffect(() => {
+    if (data?.lobbies.total) {
+      setCachedTotal(data.lobbies.total);
+    }
+  }, [data?.lobbies.total]);
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
