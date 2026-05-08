@@ -58,7 +58,7 @@ export default function HomePage() {
   }, [subData, latestData]);
 
   useEffect(() => {
-    if (data?.lobbies.total) {
+    if (data?.lobbies.total !== undefined) {
       setCachedTotal(data.lobbies.total);
     }
   }, [data?.lobbies.total]);
