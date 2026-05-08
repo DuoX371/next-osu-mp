@@ -39,8 +39,8 @@ export default function HomePage() {
         limit: pageSize
       },
     },
-    pollInterval: 5000,
-    skip: !filter,
+    pollInterval: 10000,
+    skip: Object.keys(filter).length === 0,
     notifyOnNetworkStatusChange: false,
   });
 
