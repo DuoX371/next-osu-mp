@@ -39,6 +39,8 @@ export default function HomePage() {
         limit: pageSize
       },
     },
+    pollInterval: 5000,
+    skip: !filter
   });
 
   const totalPages = Math.ceil(cachedTotal / pageSize);
