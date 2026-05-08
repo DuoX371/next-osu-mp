@@ -30,7 +30,8 @@ export default function HomePage() {
     setPageSize(size);
     setPage(0);
   }
-
+  
+  const hasFilter = Object.values(filter).some(v => v !== undefined && v !== null && v !== "");
   const { data, previousData, loading } = useQuery(GET_LOBBIES, {
     variables: {
       filter,
@@ -39,8 +40,7 @@ export default function HomePage() {
         limit: pageSize
       },
     },
-    pollInterval: 10000,
-    skip: Object.keys(filter).length === 0,
+    pollInterval: hasFilter ? 5000 : 0,
     notifyOnNetworkStatusChange: false,
   });
 
