@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ApolloWrapper } from '@/lib/graphql/apollo-wrapper';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import './globals.css';
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export const metadata: Metadata = {
   title: 'osu! mp search',
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </ApolloWrapper>
         </NuqsAdapter>
       </body>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID as string} />
     </html>
   );
 }
