@@ -41,9 +41,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://osump.chooh.moe',
   },
-  verification: {
-    google: "ecf09391390bc834"
-  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
