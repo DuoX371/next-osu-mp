@@ -37,6 +37,10 @@ export const metadata: Metadata = {
     'osu match history',
     'osu player search',
     'osu beatmap lobby',
+    'osu mp finder',
+    'osu multi search',
+    'osu tournament search',
+    'osu tournament lobby',
   ],
   alternates: {
     canonical: 'https://osump.chooh.moe',
