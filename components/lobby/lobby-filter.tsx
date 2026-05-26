@@ -16,9 +16,9 @@ type Props = {
 
 const fields = [
   { key: 'username', label: 'Username', placeholder: 'Ramizel', type: 'text' },
-  { key: 'title',    label: 'Title',    placeholder: 'OWC 2024',  type: 'text' },
-  { key: 'beatmapId', label: 'Beatmap ID', placeholder: '1234567', type: 'number' },
-  { key: 'playerId',  label: 'Player ID',  placeholder: '6402211', type: 'number' },
+  { key: 'title',    label: 'Title',    placeholder: 'amongus',  type: 'text' },
+  { key: 'beatmapId', label: 'Beatmap ID', placeholder: '1430354', type: 'number' },
+  { key: 'playerId',  label: 'Player ID',  placeholder: '9560694', type: 'number' },
 ] as const;
 
 export function LobbyFilter({ onChange }: Props) {

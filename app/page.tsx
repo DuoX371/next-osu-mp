@@ -30,8 +30,9 @@ export default function HomePage() {
     setPageSize(size);
     setPage(0);
   }
-
-  const { data, loading } = useQuery(GET_LOBBIES, {
+  
+  const hasFilter = Object.values(filter).some(v => v !== undefined && v !== null && v !== "");
+  const { data, previousData, loading } = useQuery(GET_LOBBIES, {
     variables: {
       filter,
       pagination: { 
@@ -39,7 +40,11 @@ export default function HomePage() {
         limit: pageSize
       },
     },
+    pollInterval: hasFilter ? 5000 : 0,
+    notifyOnNetworkStatusChange: false,
   });
+
+  const tableData = data ?? previousData;
 
   const totalPages = Math.ceil(cachedTotal / pageSize);
   const hasNextPage = page + 1 < totalPages;
@@ -58,7 +63,7 @@ export default function HomePage() {
   }, [subData, latestData]);
 
   useEffect(() => {
-    if (data?.lobbies.total) {
+    if (data?.lobbies.total !== undefined) {
       setCachedTotal(data.lobbies.total);
     }
   }, [data?.lobbies.total]);
@@ -76,9 +81,9 @@ export default function HomePage() {
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
           </span>
           latest #{latestId}
-          {!loading && data && (
+          {!loading && tableData && (
             <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-              {data.lobbies.total} results
+              {tableData.lobbies.total} results
             </span>
           )}
         </div>
@@ -134,7 +139,7 @@ export default function HomePage() {
       </div>
 
       {/* Results */}
-      <LobbyList lobbies={data?.lobbies.lobbies as any ?? []} loading={loading} />
+      <LobbyList lobbies={tableData?.lobbies.lobbies as any ?? []} loading={loading} />
 
       <img
         src="/kalsit.png"
