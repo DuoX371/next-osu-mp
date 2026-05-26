@@ -27,6 +27,21 @@ export const metadata: Metadata = {
     title: "osu! mp search",
     description: "Search osu! multiplayer lobbies for 🤓",
     images: ['/kerusi.jpg']
+  },
+    keywords: [
+    'osu',
+    'osu! multiplayer',
+    'osu mp',
+    'osu lobby search',
+    'osu match history',
+    'osu player search',
+    'osu beatmap lobby',
+  ],
+  alternates: {
+    canonical: 'https://osump.chooh.moe',
+  },
+  verification: {
+    google: "ecf09391390bc834"
   }
 };
 
