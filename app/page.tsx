@@ -141,7 +141,7 @@ export default function HomePage() {
       </div>
 
       {/* Expand all — sits between pagination and list */}
-      {!loading && tableData?.lobbies.lobbies.length > 0 && (
+      {!loading && tableData?.lobbies?.lobbies && tableData.lobbies.lobbies.length > 0 && (
         <div className="mt-2 mb-1 flex justify-end">
         <button
           onClick={() => setAllExpanded((p) => !p)}
