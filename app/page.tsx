@@ -5,6 +5,7 @@ import { useQuery, useSubscription } from '@apollo/client/react';
 import { LobbyFilter } from '@/components/lobby/lobby-filter';
 import { LobbyList } from '@/components/lobby/lobby-list';
 import { GET_LATEST_LOBBY_ID, GET_LOBBIES, LATEST_LOBBY_SUBSCRIPTION } from '@/lib/graphql/queries/lobbies';
+import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 
 type Filter = {
   username?: string;
@@ -54,6 +55,7 @@ export default function HomePage() {
   const { data: subData } = useSubscription(LATEST_LOBBY_SUBSCRIPTION);
 
   const [latestId, setLatestId] = useState(0);
+  const [allExpanded, setAllExpanded] = useState(false);
 
   useEffect(() => {
     const sub = subData?.lobbyAdded ?? 0;
@@ -138,8 +140,31 @@ export default function HomePage() {
         </button>
       </div>
 
+      {/* Expand all — sits between pagination and list */}
+      {!loading && tableData?.lobbies.lobbies.length > 0 && (
+        <div className="mt-2 mb-1 flex justify-end">
+        <button
+          onClick={() => setAllExpanded((p) => !p)}
+          className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {allExpanded ? (
+            <>
+              <ChevronsDownUp size={12} />
+              hide all
+            </>
+          ) : (
+            <>
+              <ChevronsUpDown size={12} />
+              expand all
+            </>
+          )}
+        </button>
+      </div>
+      )}
+
+
       {/* Results */}
-      <LobbyList lobbies={tableData?.lobbies.lobbies as any ?? []} loading={loading} />
+      <LobbyList lobbies={tableData?.lobbies.lobbies as any ?? []} loading={loading} allExpanded={allExpanded} />
 
       <img
         src="/kalsit.png"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { ExternalLink, ChevronDown } from 'lucide-react';
 
@@ -18,10 +18,15 @@ type Props = {
     players?: Player[];
   };
   index: number;
+  allExpanded?: boolean;
 };
 
-export function LobbyCard({ lobby, index }: Props) {
-  const [expanded, setExpanded] = useState(false);
+export function LobbyCard({ lobby, index, allExpanded }: Props) {
+  const [expanded, setExpanded] = useState(allExpanded ?? false);
+
+  useEffect(() => {
+    setExpanded(allExpanded ?? false);
+  }, [allExpanded]);
 
   return (
     <div

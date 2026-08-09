@@ -13,9 +13,10 @@ type Lobby = {
 type Props = {
   lobbies: Lobby[];
   loading?: boolean;
+  allExpanded?: boolean;
 };
 
-export function LobbyList({ lobbies, loading }: Props) {
+export function LobbyList({ lobbies, loading, allExpanded }: Props) {
   if (loading) {
     return (
       <div className="rounded-md border border-border">
@@ -37,7 +38,7 @@ export function LobbyList({ lobbies, loading }: Props) {
   return (
     <div className="rounded-md border border-border">
       {lobbies.map((lobby, i) => (
-        <LobbyCard key={lobby.lobbyId} lobby={lobby} index={i} />
+        <LobbyCard key={lobby.lobbyId} lobby={lobby} index={i} allExpanded={allExpanded} />
       ))}
     </div>
   );
