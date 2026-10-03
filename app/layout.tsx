@@ -5,12 +5,12 @@ import './globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google'
 
 export const metadata: Metadata = {
-  title: 'osu! mp search',
-  description: 'Search osu! multiplayer lobbies',
+  title: 'osu! Multiplayer Lobby Search',
+  description: 'Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.',
   metadataBase: new URL("https://osump.chooh.moe"),
   openGraph: {
-    title: "osu! mp search",
-    description: "Search osu! multiplayer lobbies for 🤓",
+    title: "osu! Multiplayer Lobby Search",
+    description: "Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.",
     url: "https://osump.chooh.moe",
     siteName: "osu! mp search",
     images: [
@@ -25,23 +25,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "osu! mp search",
-    description: "Search osu! multiplayer lobbies for 🤓",
+    title: "osu! Multiplayer Lobby Search",
+    description: "Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.",
     images: ['/kerusi.jpg']
   },
-    keywords: [
-    'osu',
-    'osu! multiplayer',
-    'osu mp',
-    'osu lobby search',
-    'osu match history',
-    'osu player search',
-    'osu beatmap lobby',
-    'osu mp finder',
-    'osu multi search',
-    'osu tournament search',
-    'osu tournament lobby',
-  ],
   alternates: {
     canonical: 'https://osump.chooh.moe',
   },

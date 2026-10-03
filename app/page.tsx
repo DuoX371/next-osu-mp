@@ -75,7 +75,7 @@ export default function HomePage() {
       {/* Masthead */}
       <div className="mb-8 flex items-baseline justify-between border-b border-border pb-5">
         <h1 className="font-display text-2xl font-normal tracking-tight text-foreground">
-          osu! 🤓
+          osu! multiplayer lobby search 🤓
         </h1>
         <div className="flex items-center gap-4">
           <span className="relative flex h-1.5 w-1.5">
@@ -90,6 +90,10 @@ export default function HomePage() {
           )}
         </div>
       </div>
+
+      <p className="mb-8 text-sm text-muted-foreground">
+        Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.
+      </p>
 
       {/* Filters */}
       <div className="mb-6">
