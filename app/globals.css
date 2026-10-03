@@ -50,6 +50,9 @@
 }
 
 :root {
+  color-scheme: light;
+  --page-glow-a: oklch(0.76 0.1 255 / 16%);
+  --page-glow-b: oklch(0.8 0.08 325 / 10%);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -85,6 +88,9 @@
 }
 
 .dark {
+  color-scheme: dark;
+  --page-glow-a: oklch(0.62 0.12 255 / 12%);
+  --page-glow-b: oklch(0.64 0.1 325 / 8%);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -139,6 +145,11 @@
 
 body {
   font-family: var(--font-sans);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 70% 38rem at 5% -10%, var(--page-glow-a), transparent 75%),
+    radial-gradient(ellipse 55% 32rem at 100% 10%, var(--page-glow-b), transparent 75%);
+  background-repeat: no-repeat;
 }
 
 input[type='number']::-webkit-inner-spin-button,

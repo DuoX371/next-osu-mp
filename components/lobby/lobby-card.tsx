@@ -35,17 +35,17 @@ export function LobbyCard({ lobby, index, allExpanded }: Props) {
     >
       {/* Main row */}
       <div
-        className="flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-secondary/60"
+        className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-secondary/60 sm:flex-nowrap"
         onClick={() => setExpanded((p) => !p)}
       >
         {/* ID */}
-        <span className="w-24 shrink-0 font-mono text-[11px] text-muted-foreground">
+        <span className="order-2 shrink-0 font-mono text-[11px] text-muted-foreground sm:order-none sm:w-24">
           #{lobby.lobbyId}
         </span>
 
         {/* Status */}
         <span
-          className={`shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+          className={`order-3 shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider sm:order-none ${
             lobby.status === 'ongoing'
               ? 'bg-green-500/10 text-green-600 dark:text-green-400'
               : 'bg-secondary text-muted-foreground'
@@ -55,17 +55,17 @@ export function LobbyCard({ lobby, index, allExpanded }: Props) {
         </span>
 
         {/* Title */}
-        <span className="flex-1 truncate text-sm font-medium text-foreground">
+        <span className="order-1 min-w-0 basis-full break-words text-sm font-medium text-foreground sm:order-none sm:basis-auto sm:flex-1 sm:truncate">
           {lobby.title}
         </span>
 
         {/* Date */}
-        <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
+        <span className="order-4 shrink-0 font-mono text-[11px] text-muted-foreground sm:order-none">
           {formatDistanceToNow(new Date(lobby.createdAt), { addSuffix: true })}
         </span>
 
         {/* Actions */}
-        <div className="flex shrink-0 items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div className="order-5 ml-auto flex shrink-0 items-center gap-1 sm:order-none sm:ml-0" onClick={(e) => e.stopPropagation()}>
           <a
             href={`https://osu.ppy.sh/community/matches/${lobby.lobbyId}`}
             target="_blank"

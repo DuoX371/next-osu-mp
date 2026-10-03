@@ -5,7 +5,7 @@ import { useQuery, useSubscription } from '@apollo/client/react';
 import { LobbyFilter } from '@/components/lobby/lobby-filter';
 import { LobbyList } from '@/components/lobby/lobby-list';
 import { GET_LATEST_LOBBY_ID, GET_LOBBIES, LATEST_LOBBY_SUBSCRIPTION } from '@/lib/graphql/queries/lobbies';
-import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
+import { ChevronsDownUp, ChevronsUpDown, RefreshCw } from 'lucide-react';
 
 type Filter = {
   username?: string;
@@ -20,7 +20,7 @@ export default function HomePage() {
   const [filter, setFilter] = useState<Filter>({});
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [cachedTotal, setCachedTotal] = useState(0);
+  const [cachedTotal, setCachedTotal] = useState<number | null>(null);
 
   function handleFilterChange(f: Filter) {
     setFilter(f);
@@ -33,7 +33,7 @@ export default function HomePage() {
   }
   
   const hasFilter = Object.values(filter).some(v => v !== undefined && v !== null && v !== "");
-  const { data, previousData, loading } = useQuery(GET_LOBBIES, {
+  const { data, previousData, loading, refetch } = useQuery(GET_LOBBIES, {
     variables: {
       filter,
       pagination: { 
@@ -46,8 +46,9 @@ export default function HomePage() {
   });
 
   const tableData = data ?? previousData;
+  const resultCount = tableData?.lobbies.total ?? cachedTotal;
 
-  const totalPages = Math.ceil(cachedTotal / pageSize);
+  const totalPages = Math.ceil((cachedTotal ?? 0) / pageSize);
   const hasNextPage = page + 1 < totalPages;
   const hasPreviousPage = page > 0;
 
@@ -55,7 +56,23 @@ export default function HomePage() {
   const { data: subData } = useSubscription(LATEST_LOBBY_SUBSCRIPTION);
 
   const [latestId, setLatestId] = useState(0);
+  const [acknowledgedLatestId, setAcknowledgedLatestId] = useState(0);
+  const [refreshingNewLobbies, setRefreshingNewLobbies] = useState(false);
   const [allExpanded, setAllExpanded] = useState(false);
+  const hasNewLobbies = !hasFilter && page === 0 && !!data && !!latestData &&
+    latestId > Math.max(latestData.latestLobbyId ?? 0, acknowledgedLatestId);
+
+  async function refreshNewLobbies() {
+    setRefreshingNewLobbies(true);
+    try {
+      await refetch();
+      setAcknowledgedLatestId(latestId);
+    } catch {
+      // Keep the prompt available so the user can retry.
+    } finally {
+      setRefreshingNewLobbies(false);
+    }
+  }
 
   useEffect(() => {
     const sub = subData?.lobbyAdded ?? 0;
@@ -71,29 +88,25 @@ export default function HomePage() {
   }, [data?.lobbies.total]);
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-12">
+    <main className="mx-auto max-w-4xl px-6 pt-12 pb-24">
       {/* Masthead */}
-      <div className="mb-8 flex items-baseline justify-between border-b border-border pb-5">
+      <div className="mb-8 flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-baseline sm:justify-between">
         <h1 className="font-display text-2xl font-normal tracking-tight text-foreground">
           osu! multiplayer lobby search 🤓
         </h1>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
           </span>
           latest #{latestId}
-          {!loading && tableData && (
+          {resultCount !== null && (
             <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-              {tableData.lobbies.total} results
+              {resultCount} results
             </span>
           )}
         </div>
       </div>
-
-      <p className="mb-8 text-sm text-muted-foreground">
-        Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.
-      </p>
 
       {/* Filters */}
       <div className="mb-6">
@@ -143,6 +156,20 @@ export default function HomePage() {
           next →
         </button>
       </div>
+
+      {hasNewLobbies && (
+        <div className="mb-2 flex justify-center">
+          <button
+            type="button"
+            onClick={() => void refreshNewLobbies()}
+            disabled={refreshingNewLobbies}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1.5 font-mono text-[11px] text-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-wait disabled:opacity-60"
+          >
+            <RefreshCw size={12} aria-hidden="true" className={refreshingNewLobbies ? 'animate-spin' : ''} />
+            {refreshingNewLobbies ? 'Refreshing lobbies…' : 'New lobbies available · refresh'}
+          </button>
+        </div>
+      )}
 
       {/* Expand all — sits between pagination and list */}
       {!loading && tableData?.lobbies?.lobbies && tableData.lobbies.lobbies.length > 0 && (
