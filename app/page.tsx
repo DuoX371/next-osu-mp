@@ -5,7 +5,7 @@ import { useQuery, useSubscription } from '@apollo/client/react';
 import { LobbyFilter } from '@/components/lobby/lobby-filter';
 import { LobbyList } from '@/components/lobby/lobby-list';
 import { GET_LATEST_LOBBY_ID, GET_LOBBIES, LATEST_LOBBY_SUBSCRIPTION } from '@/lib/graphql/queries/lobbies';
-import { ChevronsDownUp, ChevronsUpDown, RefreshCw } from 'lucide-react';
+import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 
 type Filter = {
   username?: string;
@@ -33,7 +33,7 @@ export default function HomePage() {
   }
   
   const hasFilter = Object.values(filter).some(v => v !== undefined && v !== null && v !== "");
-  const { data, previousData, loading, refetch } = useQuery(GET_LOBBIES, {
+  const { data, previousData, loading } = useQuery(GET_LOBBIES, {
     variables: {
       filter,
       pagination: { 
@@ -56,23 +56,7 @@ export default function HomePage() {
   const { data: subData } = useSubscription(LATEST_LOBBY_SUBSCRIPTION);
 
   const [latestId, setLatestId] = useState(0);
-  const [acknowledgedLatestId, setAcknowledgedLatestId] = useState(0);
-  const [refreshingNewLobbies, setRefreshingNewLobbies] = useState(false);
   const [allExpanded, setAllExpanded] = useState(false);
-  const hasNewLobbies = !hasFilter && page === 0 && !!data && !!latestData &&
-    latestId > Math.max(latestData.latestLobbyId ?? 0, acknowledgedLatestId);
-
-  async function refreshNewLobbies() {
-    setRefreshingNewLobbies(true);
-    try {
-      await refetch();
-      setAcknowledgedLatestId(latestId);
-    } catch {
-      // Keep the prompt available so the user can retry.
-    } finally {
-      setRefreshingNewLobbies(false);
-    }
-  }
 
   useEffect(() => {
     const sub = subData?.lobbyAdded ?? 0;
@@ -156,20 +140,6 @@ export default function HomePage() {
           next →
         </button>
       </div>
-
-      {hasNewLobbies && (
-        <div className="mb-2 flex justify-center">
-          <button
-            type="button"
-            onClick={() => void refreshNewLobbies()}
-            disabled={refreshingNewLobbies}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1.5 font-mono text-[11px] text-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-wait disabled:opacity-60"
-          >
-            <RefreshCw size={12} aria-hidden="true" className={refreshingNewLobbies ? 'animate-spin' : ''} />
-            {refreshingNewLobbies ? 'Refreshing lobbies…' : 'New lobbies available · refresh'}
-          </button>
-        </div>
-      )}
 
       {/* Expand all — sits between pagination and list */}
       {!loading && tableData?.lobbies?.lobbies && tableData.lobbies.lobbies.length > 0 && (
