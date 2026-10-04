@@ -5,5 +5,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         {
             url: 'https://osump.chooh.moe',
         },
+        {
+            url: 'https://osump.chooh.moe/about',
+        },
     ];
 }

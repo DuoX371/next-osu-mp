@@ -4,6 +4,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import './globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeSelect } from '@/components/theme-select';
+import Link from 'next/link';
 
 const themeScript = `
   (() => {
@@ -63,6 +64,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </ApolloWrapper>
         </NuqsAdapter>
         <footer className="fixed bottom-3 right-4 z-40 font-mono text-[10px] text-muted-foreground/75">
+          <Link
+            href="/about"
+            className="underline underline-offset-2 transition-colors hover:text-foreground"
+          >
+            About
+          </Link>
+          {' · '}
           Made by{' '}
           <a
             href="https://osu.ppy.sh/users/9560694"
