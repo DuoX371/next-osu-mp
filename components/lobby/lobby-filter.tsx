@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryStates, parseAsString, parseAsInteger, parseAsArrayOf } from 'nuqs';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { X } from 'lucide-react';
 
 type Filter = {
@@ -19,6 +19,7 @@ const fields = [
   { key: 'username', label: 'Username', placeholder: 'Ramizel' },
   { key: 'title',    label: 'Title',    placeholder: 'amongus' },
 ] as const;
+const MAX_BEATMAP_IDS = 5;
 
 export function LobbyFilter({ onChange }: Props) {
   const [params, setParams] = useQueryStates({
@@ -29,27 +30,35 @@ export function LobbyFilter({ onChange }: Props) {
   });
   const [beatmapInput, setBeatmapInput] = useState('');
   const [beatmapError, setBeatmapError] = useState('');
+  const beatmapIds = useMemo(
+    () => [...new Set(params.beatmapIds.filter((id) => Number.isSafeInteger(id) && id > 0))].slice(0, MAX_BEATMAP_IDS),
+    [params.beatmapIds],
+  );
 
-  function addBeatmapId() {
-    const value = beatmapInput.trim();
+  function addBeatmapId(rawValue: string) {
+    const value = rawValue.trim();
     const id = Number(value);
 
     if (!/^\d+$/.test(value) || !Number.isSafeInteger(id) || id <= 0) {
       setBeatmapError('Enter a valid beatmap ID.');
       return;
     }
-    if (params.beatmapIds.includes(id)) {
+    if (beatmapIds.includes(id)) {
       setBeatmapError('That beatmap ID is already added.');
       return;
     }
+    if (beatmapIds.length >= MAX_BEATMAP_IDS) {
+      setBeatmapError('You can add up to 5 beatmap IDs.');
+      return;
+    }
 
-    void setParams({ beatmapIds: [...params.beatmapIds, id] });
+    void setParams({ beatmapIds: [...beatmapIds, id] });
     setBeatmapInput('');
     setBeatmapError('');
   }
 
   function removeBeatmapId(id: number) {
-    void setParams({ beatmapIds: params.beatmapIds.filter((value) => value !== id) });
+    void setParams({ beatmapIds: beatmapIds.filter((value) => value !== id) });
     setBeatmapError('');
   }
 
@@ -58,12 +67,12 @@ export function LobbyFilter({ onChange }: Props) {
       onChange({
         username:  params.username  || undefined,
         title:     params.title     || undefined,
-        beatmapIds: params.beatmapIds.length ? params.beatmapIds : undefined,
+        beatmapIds: beatmapIds.length ? beatmapIds : undefined,
         playerId:  params.playerId  ?? undefined,
       });
     }, 400);
     return () => clearTimeout(timer);
-  }, [params.username, params.title, params.beatmapIds, params.playerId]);
+  }, [params.username, params.title, beatmapIds, params.playerId]);
 
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -95,36 +104,51 @@ export function LobbyFilter({ onChange }: Props) {
             pattern="[0-9]*"
             placeholder="1430354"
             value={beatmapInput}
+            disabled={beatmapIds.length >= MAX_BEATMAP_IDS}
             onChange={(event) => {
               setBeatmapInput(event.target.value);
               setBeatmapError('');
             }}
+            onPaste={(event) => {
+              const pasted = event.clipboardData.getData('text').trim();
+              const id = Number(pasted);
+              if (!beatmapInput && /^\d+$/.test(pasted) && Number.isSafeInteger(id) && id > 0) {
+                event.preventDefault();
+                addBeatmapId(pasted);
+              }
+            }}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 event.preventDefault();
-                addBeatmapId();
+                addBeatmapId(beatmapInput);
               }
             }}
             aria-invalid={!!beatmapError}
-            aria-describedby={beatmapError ? 'beatmap-id-error' : undefined}
-            className="min-w-0 flex-1 rounded-sm border border-border bg-secondary px-3 py-2 font-sans text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-foreground/40 focus:outline-none"
+            aria-describedby={beatmapError ? 'beatmap-id-hint beatmap-id-error' : 'beatmap-id-hint'}
+            className="min-w-0 flex-1 rounded-sm border border-border bg-secondary px-3 py-2 font-sans text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-foreground/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           />
           <button
             type="button"
-            onClick={addBeatmapId}
-            className="shrink-0 rounded-sm border border-border bg-secondary px-2.5 font-mono text-xs text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            onClick={() => addBeatmapId(beatmapInput)}
+            disabled={beatmapIds.length >= MAX_BEATMAP_IDS}
+            className="shrink-0 rounded-sm border border-border bg-secondary px-2.5 font-mono text-xs text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50"
           >
             Add
           </button>
         </div>
+        <p id="beatmap-id-hint" className="font-mono text-[10px] text-muted-foreground">
+          {beatmapIds.length >= MAX_BEATMAP_IDS
+            ? 'Maximum of 5 beatmap IDs reached'
+            : 'Paste to add · Enter after typing'}
+        </p>
         {beatmapError && (
           <p id="beatmap-id-error" role="alert" className="text-xs text-destructive">
             {beatmapError}
           </p>
         )}
-        {params.beatmapIds.length > 0 && (
+        {beatmapIds.length > 0 && (
           <div className="flex flex-wrap gap-1.5 pt-1" aria-label="Selected beatmap IDs">
-            {params.beatmapIds.map((id) => (
+            {beatmapIds.map((id) => (
               <span key={id} className="inline-flex items-center gap-1 rounded-sm border border-border bg-secondary px-2 py-1 font-mono text-[11px] text-foreground">
                 {id}
                 <button
