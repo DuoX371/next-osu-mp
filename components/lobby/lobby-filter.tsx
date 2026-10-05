@@ -139,7 +139,7 @@ export function LobbyFilter({ onChange }: Props) {
         <p id="beatmap-id-hint" className="font-mono text-[10px] text-muted-foreground">
           {beatmapIds.length >= MAX_BEATMAP_IDS
             ? 'Maximum of 5 beatmap IDs reached'
-            : 'Paste to add · Enter after typing'}
+            : ''}
         </p>
         {beatmapError && (
           <p id="beatmap-id-error" role="alert" className="text-xs text-destructive">
