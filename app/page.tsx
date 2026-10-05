@@ -10,7 +10,7 @@ import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 type Filter = {
   username?: string;
   title?: string;
-  beatmapId?: number;
+  beatmapIds?: number[];
   playerId?: number;
 };
 
