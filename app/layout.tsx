@@ -5,6 +5,7 @@ import './globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeSelect } from '@/components/theme-select';
 import Link from 'next/link';
+import { getSiteOrigin } from '@/lib/site-origin';
 
 const themeScript = `
   (() => {
@@ -21,35 +22,38 @@ const themeScript = `
   })();
 `;
 
-export const metadata: Metadata = {
-  title: 'osu! Multiplayer Lobby Search',
-  description: 'Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.',
-  metadataBase: new URL("https://osump.chooh.moe"),
-  openGraph: {
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await getSiteOrigin();
+  return {
     title: "osu! Multiplayer Lobby Search",
     description: "Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.",
-    url: "https://osump.chooh.moe",
-    siteName: "osu! mp search",
-    images: [
-      {
-        url: '/kerusi.jpg',
-        width: 1200,
-        height: 630,
-        alt: "https://www.pixiv.net/en/artworks/141863122"
-      }
-    ],
-    type: "website"
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "osu! Multiplayer Lobby Search",
-    description: "Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.",
-    images: ['/kerusi.jpg']
-  },
-  alternates: {
-    canonical: 'https://osump.chooh.moe',
-  },
-};
+    metadataBase: new URL(origin),
+    openGraph: {
+      title: "osu! Multiplayer Lobby Search",
+      description: "Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.",
+      url: origin,
+      siteName: "osu! mp search",
+      images: [
+        {
+          url: '/kerusi.jpg',
+          width: 1200,
+          height: 630,
+          alt: "https://www.pixiv.net/en/artworks/141863122"
+        }
+      ],
+      type: "website"
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "osu! Multiplayer Lobby Search",
+      description: "Find osu! multiplayer lobbies by username, lobby title, beatmap ID, or player ID.",
+      images: ['/kerusi.jpg']
+    },
+    alternates: {
+      canonical: origin,
+    },
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

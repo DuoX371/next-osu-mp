@@ -1,12 +1,14 @@
 import { MetadataRoute } from 'next';
+import { getSiteOrigin } from '@/lib/site-origin';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const origin = await getSiteOrigin();
     return [
         {
-            url: 'https://osump.chooh.moe',
+            url: origin,
         },
         {
-            url: 'https://osump.chooh.moe/about',
+            url: `${origin}/about`,
         },
     ];
 }

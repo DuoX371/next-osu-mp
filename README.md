@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Domains
+
+Set `SITE_ORIGINS` to a comma-separated list of the public origins served by this deployment, for example:
+
+```env
+SITE_ORIGINS=https://osump.chooh.moe,https://example.com
+```
+
+The request host selects the origin used in the sitemap, robots file, canonical URLs, and social metadata. Requests for unlisted hosts use the first origin. If unset, the site uses `https://osump.chooh.moe`. Configure the variable at runtime for the server; Docker deployments can pass it to the container. Each domain also needs its own DNS and proxy routing to this app.
+
 ## Getting Started
 
 First, run the development server:

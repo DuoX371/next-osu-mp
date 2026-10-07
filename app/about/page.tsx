@@ -1,28 +1,32 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getSiteOrigin } from '@/lib/site-origin';
 
 const description =
   'Find recent osu! multiplayer matches and tournament practice lobbies by title, player, or beatmap. Learn what the site keeps and for how long.';
 
-export const metadata: Metadata = {
-  title: 'About | osu! Multiplayer Lobby Search',
-  description,
-  alternates: { canonical: 'https://osump.chooh.moe/about' },
-  openGraph: {
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await getSiteOrigin();
+  return {
     title: 'About | osu! Multiplayer Lobby Search',
     description,
-    url: 'https://osump.chooh.moe/about',
-    siteName: 'osu! mp search',
-    type: 'website',
-    images: ['/kerusi.jpg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'About | osu! Multiplayer Lobby Search',
-    description,
-    images: ['/kerusi.jpg'],
-  },
-};
+    alternates: { canonical: `${origin}/about` },
+    openGraph: {
+      title: 'About | osu! Multiplayer Lobby Search',
+      description,
+      url: `${origin}/about`,
+      siteName: 'osu! mp search',
+      type: 'website',
+      images: ['/kerusi.jpg'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'About | osu! Multiplayer Lobby Search',
+      description,
+      images: ['/kerusi.jpg'],
+    },
+  };
+}
 
 export default function AboutPage() {
   return (
